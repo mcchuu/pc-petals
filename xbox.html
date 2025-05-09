@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="media/pinterest/bow.png">
+    <title>xbox</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #151515;
+            color: white;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Mac Header */
+        .window-header {
+            height: 32px;
+            background-color: #252525;
+            display: flex;
+            align-items: center;
+            padding-left: 10px;
+            -webkit-app-region: drag;
+            position: relative;
+            border-bottom: 1px solid #333;
+        }
+
+        .window-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .window-button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .close-button {
+            background-color: #ff5f57;
+            border: 1px solid #e0443e;
+        }
+
+        .minimize-button {
+            background-color: #ffbd2e;
+            border: 1px solid #dea123;
+        }
+
+        .maximize-button {
+            background-color: #28c941;
+            border: 1px solid #1aab29;
+        }
+
+        /* Main Layout */
+        .app-container {
+            display: flex;
+            height: calc(100vh - 32px);
+            
+        }
+
+        /* Sidebar */
+        .sidebar {
+            min-width: 30px;
+            background-color: #151515;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-right: 1px solid #333;
+        }
+
+        .sidebar-item {
+            width: 100%;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .sidebar-item.active {
+            background-color: #2d2d2d;
+        }
+
+        .sidebar-item.active::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            height: 100%;
+            width: 4px;
+            background-color: #107C10;
+        }
+
+        .sidebar-icon {
+            width: 24px;
+            height: 24px;
+            fill: #8e8e8e;
+        }
+
+        .sidebar-item.active .sidebar-icon {
+            fill: white;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0;
+            position: relative;
+            background-image: url('media/background5.jpg');
+            background: linear-gradient(to bottom, #7bb6ff36, #000);
+
+        }
+
+        .search-container {
+            flex: 1;
+            display: flex;
+            max-width: 600px;
+            margin-right: 20px;
+        }
+
+        .search-box {
+            flex: 1;
+            background-color: #333;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            padding: 8px 12px;
+            font-size: 14px;
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .notification-icon {
+            position: relative;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #107C10;
+            color: white;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            font-size: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Profile Content */
+        .profile-container {
+            padding: 20px;
+            margin-left: 20%;
+            margin-right: 20%;
+        }
+
+        .profile-header {
+            display: flex;
+            justify-content: space-between;
+            padding: 6.5%;
+        }
+
+        .profile-info {
+            display: flex;
+            gap: 20px;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-details h2 {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        .profile-platform {
+            color: #8e8e8e;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #8e8e8e;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .profile-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .action-button {
+            background-color: #202020;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            text-align: center;
+            width: 100px;
+        }
+
+        /* Profile Stats */
+        .profile-stats {
+            display: flex;
+            margin: 20px 0;
+            gap: 40px;
+        }
+
+        .stat-section {
+            flex: 1;
+        }
+
+        .stat-header {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 14px;
+        }
+
+        .location-value {
+            color: #8e8e8e;
+        }
+
+        .stats-with-count {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .count-with-arrow {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #8e8e8e;
+            cursor: pointer;
+        }
+
+        /* Achievements Section */
+        .achievements-section {
+            margin-top: 30px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .gamerscore {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .gamerscore-icon {
+            width: 20px;
+            height: 20px;
+            background-color: #107C10;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Game Items */
+        .game-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .game-item {
+            display: flex;
+            gap: 15px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #333;
+        }
+
+        .game-cover {
+            width: 120px;
+            height: 150px;
+            overflow: hidden;
+            border-radius: 4px;
+        }
+
+        .game-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .game-details {
+            flex: 1;
+        }
+
+        .game-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .achievement-progress {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .progress-count {
+            font-size: 14px;
+            color: #8e8e8e;
+        }
+
+        .progress-bar-container {
+            flex: 1;
+            height: 4px;
+            background-color: #333;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: #107C10;
+        }
+
+        .completion-percentage {
+            color: #8e8e8e;
+            font-size: 14px;
+        }
+
+        /* Where I Play Section */
+        .where-i-play-section {
+            margin-top: 30px;
+        }
+
+        .platform-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .platform-icon {
+            width: 24px;
+            height: 24px;
+            opacity: 0.7;
+        }
+
+        /* Footer */
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 20px;
+            color: #8e8e8e;
+            font-size: 12px;
+            border-top: 1px solid #333;
+        }
+
+        .playtime {
+            margin-top: 8px;
+            color: #8e8e8e;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .time-icon {
+            width: 14px;
+            height: 14px;
+            opacity: 0.7;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .sidebar-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+        }
+
+        .where-i-play-section {
+            margin-top: 30px;
+        }
+
+        .platform-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .platform-icon {
+            width: 24px;
+            height: 24px;
+            opacity: 0.7;
+        }
+        
+        /* Tab Navigation */
+        .tabs-navigation {
+            display: flex;
+            border-bottom: 1px solid #333;
+            margin: 30px 0 20px;
+            position: relative;
+        }
+
+        .tab {
+            padding: 15px 30px;
+            cursor: pointer;
+            color: #8e8e8e;
+            font-weight: 600;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        .tab.active {
+            color: white;
+        }
+
+        .tab.active::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -1px;
+            width: 100%;
+            height: 3px;
+            background-color: white;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            position: relative;
+
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+        
+        /* Activity Feed (Posts) */
+        .activity-feed {
+            color: #fff;
+        }
+        
+        .post-input {
+            background-color: #1e1e1e;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #8e8e8e;
+            cursor: pointer;
+        }
+        
+        .feed-post {
+            background-color: #1e1e1e;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            padding: 15px;
+        }
+        
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .post-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 10px;
+        }
+        
+        .post-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .post-info {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            font-size: 14px;
+        }
+        
+        .post-username {
+            font-weight: 600;
+            margin-right: 5px;
+        }
+        
+        .post-action {
+            color: #8e8e8e;
+            margin-right: 5px;
+        }
+        
+        .post-time {
+            color: #8e8e8e;
+            font-size: 12px;
+            margin-left: auto;
+        }
+        
+        /* Add these styles to your existing CSS */
+
+        /* Make post media responsive */
+        .post-media {
+            position: relative;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            width: 100%;
+        }
+
+        /* Make videos responsive */
+        .post-media video {
+            width: 100%;
+            height: auto;
+            max-height: 100%;
+            object-fit: contain; /* This ensures the video maintains its aspect ratio */
+            display: block;
+        }
+
+        /* Make images responsive */
+        .post-media img {
+            width: 100%;
+            height: auto;
+            max-height: 100%;
+            object-fit: contain; /* This ensures the image maintains its aspect ratio */
+            display: block;
+        }
+
+        /* Ensure media info stays at the bottom */
+        .media-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            bottom: -8.5px;
+            width: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            padding: 10px;
+            box-sizing: border-box;
+            z-index: 2; /* Ensure it stays on top */
+        }
+        
+        .media-title {
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .view-count {
+            color: #ccc;
+            font-size: 12px;
+        }
+        
+        .post-actions {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .action-button {
+            cursor: pointer;
+        }
+        
+        .post-comment {
+            color: #8e8e8e;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* Footer */
+    </style>
+</head>
+<body>
+    <!-- Mac Window Header -->
+    <div class="window-header">
+        <div class="window-buttons">
+            <div class="window-button close-button" id="close"></div>
+            <div class="window-button minimize-button" id="minimize"></div>
+            <div class="window-button maximize-button" id="maximize"></div>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-item">
+                <svg class="sidebar-icon" viewBox="0 0 24 24">
+                    <path d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z" fill="currentColor" />
+                </svg>
+            </div>
+            <div class="sidebar-item active">
+                <svg class="sidebar-icon" viewBox="0 0 24 24">
+                    <path d="M15,5.5L11,1L7,5.5L11,10L15,5.5M4,13C4,17.42 7.58,21 12,21C16.42,21 20,17.42 20,13C20,13 16.5,13 12,13C7.5,13 4,13 4,13Z" fill="currentColor" />
+                </svg>
+            </div>
+            <div class="sidebar-item">
+                <svg class="sidebar-icon" viewBox="0 0 24 24">
+                    <path d="M21,3H3C2,3 1,4 1,5V19A2,2 0 0,0 3,21H21C22,21 23,20 23,19V5C23,4 22,3 21,3M5,17L8.5,12.5L11,15.5L14.5,11L19,17H5Z" fill="currentColor" />
+                </svg>
+            </div>
+            <div class="sidebar-item">
+                <svg class="sidebar-icon" viewBox="0 0 24 24">
+                    <path d="M21,6H3V18H21V6M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9Z" fill="currentColor" />
+                </svg>
+            </div>
+            <div class="sidebar-item">
+                <svg class="sidebar-icon" viewBox="0 0 24 24">
+                    <path d="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z" fill="currentColor" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Profile Content -->
+            <div class="profile-container">
+                <!-- Profile Header -->
+                <div class="profile-header">
+                    <div class="profile-info">
+                        <div class="profile-avatar">
+                            <img src="media/rebirth.jpg" alt="Profile avatar">
+                        </div>
+                        <div class="profile-details">
+                            <h2>miffypetals</h2>
+                            <div class="profile-platform">Minecraft - In the Menus</div>
+                            <div class="social-link">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 5C13.66 5 15 6.34 15 8C15 9.66 13.66 11 12 11C10.34 11 9 9.66 9 8C9 6.34 10.34 5 12 5ZM12 19.2C9.5 19.2 7.29 17.92 6 15.98C6.03 13.99 10 12.9 12 12.9C13.99 12.9 17.97 13.99 18 15.98C16.71 17.92 14.5 19.2 12 19.2Z" fill="#8E8E8E"/>
+                                </svg>
+                                Link social accounts
+                            </div>
+                        </div>
+                    </div>
+                    <div class="profile-actions">
+                        <button class="action-button">Change background</button>
+                        <button class="action-button">Settings</button>
+                    </div>
+                </div>
+
+                <!-- Profile Stats -->
+                <div class="profile-stats">
+                    <div class="stat-section">
+                        <div class="stat-header">Bio</div>
+                        <div class="stat-value">obi m bụ maka ọnwa,
+                            taa echi na ebìghị̀èbì ♡</div>
+                    </div>
+                    <div class="stat-section">
+                        <div class="stat-header">Location</div>
+                        <div class="stat-value location-value">magnolia's basement</div>
+                    </div>
+                    <div class="stat-section">
+                        <div class="stats-with-count">
+                            <div class="stat-header">Friends</div>
+                            <div class="count-with-arrow">
+                                <span>12</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                    <path d="M8.59 16.59L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.59Z" fill="#8E8E8E"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-section">
+                        <div class="stats-with-count">
+                            <div class="stat-header">Followers</div>
+                            <div class="count-with-arrow">
+                                <span>6</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                    <path d="M8.59 16.59L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.59Z" fill="#8E8E8E"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabs Navigation -->
+                <div class="tabs-navigation">
+                    <div class="tab active" data-tab="achievements">GAMES</div>
+                    <div class="tab" data-tab="posts">POSTS</div>
+                    <div class="tab-indicator"></div>
+                </div>
+
+                <!-- Content Sections -->
+                <div class="tab-content">
+                    
+                    <!-- Posts Content (Activity Feed) -->
+                    <div id="posts-content" class="content-section">
+                        <div class="activity-feed">
+                            <div class="post-input">
+                                <span>Got something to say?</span>
+                            </div>
+                            
+                            <div class="feed-post">
+                                <div class="post-header">
+                                    <div class="post-avatar">
+                                        <img src="media/rebirth.jpg" alt="User avatar">
+                                    </div>
+                                    <div class="post-info">
+                                        <div class="post-username">miffypetals</div>
+                                        <div class="post-action">made a clip</div>
+                                        <div class="post-time">6h ago</div>
+                                    </div>
+                                </div>
+                                <div class="post-content">
+                                    <div class="post-media">
+                                        <video class="video-player" controls>
+                                            <source src="media/xbox/valorant.mp4" type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                        <div class="media-info">
+                                            <div class="media-title">VALORANT</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="post-actions">
+                                    <div class="action-button">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="#8E8E8E">
+                                            <path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z" />
+                                        </svg>
+                                    </div>
+                                    <div class="action-button">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="#8E8E8E">
+                                            <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4M12,10.5A1.5,1.5 0 0,1 13.5,12A1.5,1.5 0 0,1 12,13.5A1.5,1.5 0 0,1 10.5,12A1.5,1.5 0 0,1 12,10.5M7.5,10.5A1.5,1.5 0 0,1 9,12A1.5,1.5 0 0,1 7.5,13.5A1.5,1.5 0 0,1 6,12A1.5,1.5 0 0,1 7.5,10.5M16.5,10.5A1.5,1.5 0 0,1 18,12A1.5,1.5 0 0,1 16.5,13.5A1.5,1.5 0 0,1 15,12A1.5,1.5 0 0,1 16.5,10.5Z" />
+                                        </svg>
+                                    </div>
+                                    <div class="action-button">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="#8E8E8E">
+                                            <path d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="feed-post">
+                                <div class="post-header">
+                                    <div class="post-avatar">
+                                        <img src="media/rebirth.jpg" alt="User avatar">
+                                    </div>
+                                    <div class="post-info">
+                                        <div class="post-username">miffypetals</div>
+                                        <div class="post-action">post a screenshot</div>
+                                        <div class="post-time">3d ago</div>
+                                    </div>
+                                </div>
+                                <div class="post-content">
+                                    <div class="post-media">
+                                        <img src="media/xbox/i1.png" alt="">
+                                        <div class="media-info">
+                                            <div class="media-title">Infinity Nikki</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="post-actions">
+                                    <div class="action-button">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="#8E8E8E">
+                                            <path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z" />
+                                        </svg>
+                                    </div>
+                                    <div class="action-button">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="#8E8E8E">
+                                            <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4M12,10.5A1.5,1.5 0 0,1 13.5,12A1.5,1.5 0 0,1 12,13.5A1.5,1.5 0 0,1 10.5,12A1.5,1.5 0 0,1 12,10.5M7.5,10.5A1.5,1.5 0 0,1 9,12A1.5,1.5 0 0,1 7.5,13.5A1.5,1.5 0 0,1 6,12A1.5,1.5 0 0,1 7.5,10.5M16.5,10.5A1.5,1.5 0 0,1 18,12A1.5,1.5 0 0,1 16.5,13.5A1.5,1.5 0 0,1 15,12A1.5,1.5 0 0,1 16.5,10.5Z" />
+                                        </svg>
+                                    </div>
+                                    <div class="action-button">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="#8E8E8E">
+                                            <path d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="feed-post">
+                                <div class="post-header">
+                                    <div class="post-avatar">
+                                        <img src="media/rebirth.jpg" alt="User avatar">
+                                    </div>
+                                    <div class="post-info">
+                                        <div class="post-username">miffypetals</div>
+                                        <div class="post-action">post a screenshot</div>
+                                        <div class="post-time">1w ago</div>
+                                    </div>
+                                </div>
+                                <div class="post-content">
+                                    <div class="post-media">
+                                        <img src="media/xbox/image.png" alt="">
+                                        <div class="media-info">
+                                            <div class="media-title">VALORANT</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="post-actions">
+                                    <div class="action-button">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="#8E8E8E">
+                                            <path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z" />
+                                        </svg>
+                                    </div>
+                                    <div class="action-button">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="#8E8E8E">
+                                            <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4M12,10.5A1.5,1.5 0 0,1 13.5,12A1.5,1.5 0 0,1 12,13.5A1.5,1.5 0 0,1 10.5,12A1.5,1.5 0 0,1 12,10.5M7.5,10.5A1.5,1.5 0 0,1 9,12A1.5,1.5 0 0,1 7.5,13.5A1.5,1.5 0 0,1 6,12A1.5,1.5 0 0,1 7.5,10.5M16.5,10.5A1.5,1.5 0 0,1 18,12A1.5,1.5 0 0,1 16.5,13.5A1.5,1.5 0 0,1 15,12A1.5,1.5 0 0,1 16.5,10.5Z" />
+                                        </svg>
+                                    </div>
+                                    <div class="action-button">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="#8E8E8E">
+                                            <path d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="feed-post">
+                                <div class="post-header">
+                                    <div class="post-avatar">
+                                        <img src="media/rebirth.jpg" alt="User avatar">
+                                    </div>
+                                    <div class="post-info">
+                                        <div class="post-username">miffypetals</div>
+                                        <div class="post-action">post a screenshot</div>
+                                        <div class="post-time">2mo ago</div>
+                                    </div>
+                                </div>
+                                <div class="post-content">
+                                    <div class="post-media">
+                                        <img src="media/xbox/2025_03_01_09_15_58_6465844.jpeg" alt="">
+                                        <div class="media-info">
+                                            <div class="media-title">Infinity Nikki</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="post-actions">
+                                    <div class="action-button">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="#8E8E8E">
+                                            <path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z" />
+                                        </svg>
+                                    </div>
+                                    <div class="action-button">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="#8E8E8E">
+                                            <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4M12,10.5A1.5,1.5 0 0,1 13.5,12A1.5,1.5 0 0,1 12,13.5A1.5,1.5 0 0,1 10.5,12A1.5,1.5 0 0,1 12,10.5M7.5,10.5A1.5,1.5 0 0,1 9,12A1.5,1.5 0 0,1 7.5,13.5A1.5,1.5 0 0,1 6,12A1.5,1.5 0 0,1 7.5,10.5M16.5,10.5A1.5,1.5 0 0,1 18,12A1.5,1.5 0 0,1 16.5,13.5A1.5,1.5 0 0,1 15,12A1.5,1.5 0 0,1 16.5,10.5Z" />
+                                        </svg>
+                                    </div>
+                                    <div class="action-button">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="#8E8E8E">
+                                            <path d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                <!-- Achievements Content -->
+                    <div id="achievements-content" class="content-section active">
+
+                <!-- Achievements Section -->
+                <div class="achievements-section">
+                    <div class="section-header">
+                        <h3>Achievements</h3>
+                        <div class="gamerscore">
+                            <div class="gamerscore-icon">G</div>
+                            <span>3170</span>
+                        </div>
+                    </div>
+
+                    <div class="game-list">
+                        <!-- Game 1 -->
+                        <div class="game-item">
+                            <div class="game-cover">
+                                <img src="media/xbox/infinity.avif">
+                            </div>
+                            <div class="game-details">
+                                <div class="game-title">Infinity Nikki</div>
+                                <div class="achievement-progress">
+                                    <div class="progress-count">210/1000</div>
+                                    <div class="progress-bar-container">
+                                        <div class="progress-bar" style="width: 27%;"></div>
+                                    </div>
+                                    <div class="completion-percentage">21%</div>
+                                </div>
+
+                                <div class="playtime">
+                                    <svg class="time-icon" viewBox="0 0 24 24">
+                                        <path d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z" fill="#8E8E8E"/>
+                                    </svg>
+                                    <span>42h 6m played</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Game 2 -->
+                        <div class="game-item">
+                            <div class="game-cover">
+                                <img src="media/xbox/val.jfif">
+                            </div>
+                            <div class="game-details">
+                                <div class="game-title">VALORANT</div>
+                                <div class="achievement-progress">
+                                    <div class="progress-count">170/1000</div>
+                                    <div class="progress-bar-container">
+                                        <div class="progress-bar" style="width: 17%;"></div>
+                                    </div>
+                                    <div class="completion-percentage">17%</div>
+                                </div>
+                                <div class="playtime">
+                                    <svg class="time-icon" viewBox="0 0 24 24">
+                                        <path d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z" fill="#8E8E8E"/>
+                                    </svg>
+                                    <span>474h 42m played</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Game 3 -->
+                        <div class="game-item">
+                            <div class="game-cover">
+                                <img src="media/xbox/minecraft.jpg">
+                            </div>
+                            <div class="game-details">
+                                <div class="game-title">Minecraft</div>
+                                <div class="achievement-progress">
+                                    <div class="progress-count">1675/2950</div>
+                                    <div class="progress-bar-container">
+                                        <div class="progress-bar" style="width: 57%;"></div>
+                                    </div>
+                                    <div class="completion-percentage">57%</div>
+                                </div>
+                                <div class="playtime">
+                                    <svg class="time-icon" viewBox="0 0 24 24">
+                                        <path d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z" fill="#8E8E8E"/>
+                                    </svg>
+                                    <span>1006h 11m</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="game-item">
+                            <div class="game-cover">
+                                <img src="media/xbox/ff71.jfif">
+                            </div>
+                            <div class="game-details">
+                                <div class="game-title">FINAL FANTASY VII REMAKE INTERGRADE</div>
+                                <div class="achievement-progress">
+                                    <div class="progress-count">80/1000</div>
+                                    <div class="progress-bar-container">
+                                        <div class="progress-bar" style="width: 8%;"></div>
+                                    </div>
+                                    <div class="completion-percentage">8%</div>
+                                </div>
+                                <div class="playtime">
+                                    <svg class="time-icon" viewBox="0 0 24 24">
+                                        <path d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z" fill="#8E8E8E"/>
+                                    </svg>
+                                    <span>12h 24m played</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="game-item">
+                            <div class="game-cover">
+                                <img src="media/xbox/fortnite.jfif">
+                            </div>
+                            <div class="game-details">
+                                <div class="game-title">Fortnite</div>
+                                <div class="achievement-progress">
+                                    <div class="progress-count">320/1000</div>
+                                    <div class="progress-bar-container">
+                                        <div class="progress-bar" style="width:38%;"></div>
+                                    </div>
+                                    <div class="completion-percentage">32%</div>
+                                </div>
+                                <div class="playtime">
+                                    <svg class="time-icon" viewBox="0 0 24 24">
+                                        <path d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z" fill="#8E8E8E"/>
+                                    </svg>
+                                    <span>205h 9m played</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Game 4 -->
+                        <div class="game-item">
+                            <div class="game-cover">
+                                <img src="media/xbox/overwatch.jpg">
+                            </div>
+                            <div class="game-details">
+                                <div class="game-title">Overwatch 2</div>
+                                <div class="achievement-progress">
+                                    <div class="progress-count">320/1000</div>
+                                                <div class="progress-bar-container">
+                                                    <div class="progress-bar" style="width: 0%;"></div>
+                                                </div>
+                                                <div class="completion-percentage">0%</div>
+                                            </div>
+                                            <div class="playtime">
+                                                <svg class="time-icon" viewBox="0 0 24 24">
+                                                    <path d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z" fill="#8E8E8E"/>
+                                                </svg>
+                                                <span>47h 12m played</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                        </div>
+                                    </div>
+            
+                <script>
+                    // Back button to return to macbook screen
+                document.getElementById('close').addEventListener('click', function () {
+                    window.close(); // Only works if the window was opened via script
+                });
+
+                document.getElementById('minimize').addEventListener('click', function () {
+                    window.close(); // Simulated minimize by closing the window
+                });
+
+                document.getElementById('maximize').addEventListener('click', function () {
+                    window.open('xbox.html', '_blank'); // Open notes.html in a new tab
+                });
+                
+                // Tab functionality
+                document.addEventListener('DOMContentLoaded', function() {
+                    const tabs = document.querySelectorAll('.tab');
+                    
+                    tabs.forEach(tab => {
+                        tab.addEventListener('click', function() {
+                            // Remove active class from all tabs
+                            tabs.forEach(t => t.classList.remove('active'));
+                            
+                            // Add active class to clicked tab
+                            this.classList.add('active');
+                            
+                            // Hide all content sections
+                            const contentSections = document.querySelectorAll('.content-section');
+                            contentSections.forEach(section => section.classList.remove('active'));
+                            
+                            // Show the selected content section
+                            const tabName = this.getAttribute('data-tab');
+                            document.getElementById(`${tabName}-content`).classList.add('active');
+                        });
+                    });
+                });
+                </script>
+            </body>
+            </html>
